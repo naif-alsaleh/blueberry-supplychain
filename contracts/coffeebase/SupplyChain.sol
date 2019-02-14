@@ -96,43 +96,44 @@ contract SupplyChain {
 
   // Define a modifier that checks if an item.state of a upc is Processed
   modifier processed(uint _upc) {
-
+    require(items[_upc].itemState == State.Processed);
+    _;
     _;
   }
   
   // Define a modifier that checks if an item.state of a upc is Packed
   modifier packed(uint _upc) {
-
+    require(items[_upc].itemState == State.Packed);
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is ForSale
   modifier forSale(uint _upc) {
-
+    require(items[_upc].itemState == State.ForSale);
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Sold
   modifier sold(uint _upc) {
-
+    require(items[_upc].itemState == State.Sold);
     _;
   }
   
   // Define a modifier that checks if an item.state of a upc is Shipped
   modifier shipped(uint _upc) {
-
+    require(items[_upc].itemState == State.Shipped);
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Received
   modifier received(uint _upc) {
-
+    require(items[_upc].itemState == State.Received);
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Purchased
   modifier purchased(uint _upc) {
-    
+    require(items[_upc].itemState == State.Purchased);
     _;
   }
 
@@ -153,14 +154,33 @@ contract SupplyChain {
   }
 
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'
-  function harvestItem(uint _upc, address _originFarmerID, string _originFarmName, string _originFarmInformation, string  _originFarmLatitude, string  _originFarmLongitude, string  _productNotes) public 
-  {
+  function harvestItem(
+    uint _upc,
+    address _originFarmerID,
+    string _originFarmName,
+    string _originFarmInformation,
+    string _originFarmLatitude,
+    string _originFarmLongitude,
+    string _productNotes
+  ) public {
     // Add the new item as part of Harvest
-    
+    Item memory item;
+    item.upc = _upc;
+    item.sku = sku;
+    item.originFarmerID = _originFarmerID;
+    item.originFarmName = _originFarmName;
+    item.originFarmInformation = _originFarmInformation;
+    item.originFarmLatitude = _originFarmLatitude;
+    item.originFarmLongitude = _originFarmLongitude;
+    item.productNotes = _productNotes;
+
+    items[item.upc] = item;   
+
     // Increment sku
     sku = sku + 1;
-    // Emit the appropriate event
     
+    // Emit the appropriate event
+    emit Harvested(item.upc);
   }
 
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
