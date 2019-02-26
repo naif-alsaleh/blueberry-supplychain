@@ -1,6 +1,13 @@
 pragma solidity ^0.4.24;
+
+import "../access-control/ConsumerRole.sol";
+import "../access-control/DistributorRole.sol";
+import "../access-control/FarmerRole.sol";
+import "../access-control/RetailerRole.sol";
+import "../core/Ownable.sol";
+
 // Define a contract 'Supplychain'
-contract SupplyChain {
+contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, RetailerRole {
 
   // Define 'owner'
   address owner;
@@ -161,7 +168,7 @@ contract SupplyChain {
     string _originFarmLatitude,
     string _originFarmLongitude,
     string _productNotes
-  ) public {
+  ) public onlyFarmer() {
     // Add the new item as part of Harvest
     Item memory item;
     item.upc = _upc;
@@ -191,6 +198,7 @@ contract SupplyChain {
 
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].ownerID)
+  onlyFarmer()
 
   {
     // Update the appropriate fields
@@ -207,6 +215,7 @@ contract SupplyChain {
   
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].ownerID)
+  onlyFarmer()
 
   {
     // Update the appropriate fields
@@ -223,6 +232,7 @@ contract SupplyChain {
   
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].ownerID)
+  onlyFarmer()
 
   {
     // Update the appropriate fields
@@ -245,6 +255,8 @@ contract SupplyChain {
 
     // Call modifer to send any excess ether back to buyer
     checkValue(_upc)
+
+    onlyDistributor()
     {
     
     // Update the appropriate fields - ownerID, distributorID, itemState
@@ -267,6 +279,7 @@ contract SupplyChain {
 
     // Call modifier to verify caller of this function
     verifyCaller(items[_upc].ownerID)
+    onlyDistributor()
     
     {
     // Update the appropriate fields
@@ -283,6 +296,7 @@ contract SupplyChain {
     shipped(_upc)
 
     // Access Control List enforced by calling Smart Contract / DApp
+    onlyRetailer()
     {
     // Update the appropriate fields - ownerID, retailerID, itemState
     items[_upc].ownerID = msg.sender;
@@ -300,6 +314,7 @@ contract SupplyChain {
     received(_upc)
 
     // Access Control List enforced by calling Smart Contract / DApp
+    onlyConsumer()
     {
     // Update the appropriate fields - ownerID, consumerID, itemState
     items[_upc].ownerID = msg.sender;
