@@ -14,7 +14,7 @@ contract('SupplyChain', function (accounts) {
     const originFarmLongitude = "144.341490"
     var productID = sku + upc
     const productNotes = "Best beans for Espresso"
-    const productPrice = web3.utils.toWei('1', "ether")
+    const productPrice = web3.toWei('1', "ether")
     var itemState = 0
     const distributorID = accounts[2]
     const retailerID = accounts[3]
@@ -40,6 +40,23 @@ contract('SupplyChain', function (accounts) {
     console.log("Distributor: accounts[2] ", accounts[2])
     console.log("Retailer: accounts[3] ", accounts[3])
     console.log("Consumer: accounts[4] ", accounts[4])
+
+
+    before(async() => {
+        const supplyChain = await SupplyChain.deployed()
+
+        await supplyChain.addFarmer(originFarmerID);
+        await supplyChain.addRetailer(retailerID);
+        await supplyChain.addConsumer(consumerID);
+        await supplyChain.addDistributor(distributorID);
+
+        // await supplyChain.addFarmer('0x27D8D15CbC94527cAdf5eC14B69519aE23288B95');
+        //await supplyChain.addRetailer('0x27D8D15CbC94527cAdf5eC14B69519aE23288B95');
+        //await supplyChain.addConsumer('0x27D8D15CbC94527cAdf5eC14B69519aE23288B95');
+        //await supplyChain.addDistributor('0x27D8D15CbC94527cAdf5eC14B69519aE23288B95');
+
+        
+    });
 
     // 1st Test
     it("Testing smart contract function harvestItem() that allows a farmer to harvest coffee", async () => {
