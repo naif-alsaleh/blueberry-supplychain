@@ -130,6 +130,8 @@ App = {
         var processId = parseInt($(event.target).data('id'));
         console.log('processId',processId);
 
+        App.readForm();
+
         switch(processId) {
             case 1:
                 return await App.harvestItem(event);
